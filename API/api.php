@@ -39,6 +39,11 @@ switch ($method) {
             $booking = $bookingObj->getAllBooking();
             echo json_encode($booking);
         }
+        elseif ($endpoint === '/bookingNoBookingPrice') {
+            // Get all employees
+            $booking = $bookingObj->getAllBookingWithNullPrice();
+            echo json_encode($booking);
+        }
         elseif ($endpoint === '/order') {
             // Get all employees
             $order = $orderObj->getAllOrder();
@@ -65,6 +70,36 @@ switch ($method) {
         elseif (preg_match('/^\/booking\/(\d+)$/', $endpoint, $matches)) {
             $tanggal = $matches[1];
             $bookedTimes = $bookingObj->getBookedTimes($tanggal);
+        
+            // Periksa apakah terjadi kesalahan
+            if (isset($bookedTimes['error'])) {
+                // Tanggapan jika terjadi kesalahan
+                echo json_encode($bookedTimes);
+            } else {
+                // Tanggapan jika berhasil
+                echo json_encode($bookedTimes);
+            }
+        }
+        elseif (preg_match('/^\/bookingNoRange/', $endpoint, $matches)) {
+            $bookedTimes = $bookingObj->getAllBookedHistory();
+        
+            // Periksa apakah terjadi kesalahan
+            if (isset($bookedTimes['error'])) {
+                // Tanggapan jika terjadi kesalahan
+                echo json_encode($bookedTimes);
+            } else {
+                // Tanggapan jika berhasil
+                echo json_encode($bookedTimes);
+            }
+        }
+        elseif (preg_match('/^\/bookingRange\/(\d+)\/(\d+)$/', $endpoint, $matches)) {
+            list($tahunAwal, $bulanAwal, $tanggalAwal) = sscanf($matches[1], "%4d%2d%2d");
+            $tanggal_formatAwal = "$tahunAwal-$bulanAwal-$tanggalAwal";
+
+            list($tahunAkhir, $bulanAkhir, $tanggalAkhir) = sscanf($matches[2], "%4d%2d%2d");
+            $tanggal_formatAkhir = "$tahunAkhir-$bulanAkhir-$tanggalAkhir";
+
+            $bookedTimes = $bookingObj->getBookedHistoryByRange($tanggal_formatAwal, $tanggal_formatAkhir);
         
             // Periksa apakah terjadi kesalahan
             if (isset($bookedTimes['error'])) {
