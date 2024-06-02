@@ -33,10 +33,40 @@ class Booking
             $row['order_layanan'] = implode(', ', $order_layanans);
             $booking[] = $row;
         }
-        
         return $booking;
+    }
+    public function getAllBookingWithNullPrice() {
+        $query = "SELECT * FROM booking WHERE harga_booking IS NULL";
+        $queryPelayanan = "SELECT id_booking, id_pelayanan FROM order_layanan";
+        $result = mysqli_query($this->con, $query);
+        $resultPelayanan = mysqli_query($this->con, $queryPelayanan);
         
+        // Simpan semua hasil $resultPelayanan ke dalam array
+        $orderLayanans = array();
+        while ($rowPel = mysqli_fetch_assoc($resultPelayanan)) {
+            $orderLayanans[$rowPel['id_booking']][] = $rowPel['id_pelayanan'];
+        }
         
+        $booking = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_booking = $row['id_booking'];
+            $order_layanans = array();
+            // Periksa jika ada data pelayanan untuk booking saat ini
+            if (isset($orderLayanans[$id_booking])) {
+                foreach ($orderLayanans[$id_booking] as $id_pelayanan) {
+                    $DataPel = mysqli_fetch_assoc(mysqli_query($this->con, "SELECT nama FROM pelayanan WHERE id_pelayanan=$id_pelayanan"));
+                    $order_layanans[] = $DataPel['nama'];
+                }
+            }
+            $row['order_layanan'] = implode(', ', $order_layanans);
+            $cari = "SELECT username,no_telp FROM user WHERE userID = '$row[userID]'";
+            $koneksi = mysqli_query($this->con, $cari);
+            $ketemu = mysqli_fetch_assoc($koneksi);
+            $row['nama_booking'] = $ketemu['username'];
+            $row['nomerhp_booking'] = $ketemu['no_telp'];
+            $booking[] = $row;
+        }
+        return $booking; 
     }
     public function getBookingById($id)
     {
