@@ -20,7 +20,7 @@ class Layanan
     }
     public function getLayananById($id)
     {
-        $query = "SELECT * FROM pelayanan WHERE id = $id";
+        $query = "SELECT * FROM pelayanan WHERE id_pelayanan = $id";
         $result = mysqli_query($this->con, $query);
         $layanan = mysqli_fetch_assoc($result);
         $layanan['gambar'] = "http://localhost/BEPLAZA/Storage/" . $layanan['gambar'];
@@ -33,7 +33,7 @@ class Layanan
     
         $gambarExt = strtolower(pathinfo($gambarName, PATHINFO_EXTENSION));
     
-        $queryData = "SELECT * FROM pelayanan ORDER BY id DESC LIMIT 1";
+        $queryData = "SELECT * FROM pelayanan ORDER BY id_pelayanan DESC LIMIT 1";
         $resultdata = mysqli_query($this->con, $queryData);
         $row = mysqli_fetch_assoc($resultdata);
 
@@ -43,7 +43,7 @@ class Layanan
         if (!move_uploaded_file($gambarTmpName, $gambar_destination)) {
             return false;
         }
-        $query = "UPDATE pelayanan SET gambar = '$nama_unik_gambar' WHERE id = '$row[id]' ";
+        $query = "UPDATE pelayanan SET gambar = '$nama_unik_gambar' WHERE id_pelayanan = '$row[id_pelayanan]' ";
         $result = mysqli_query($this->con, $query);
         if ($result) {
             return true;
@@ -74,7 +74,7 @@ class Layanan
         $harga = $data['harga'];
         $tampilkan = $data['tampilkan'];
 
-        $query = "UPDATE pelayanan SET nama = '$nama', keterangan = '$keterangan', harga = '$harga', tampilkan = '$tampilkan' WHERE id = $id";
+        $query = "UPDATE pelayanan SET nama = '$nama', keterangan = '$keterangan', harga = '$harga', tampilkan = '$tampilkan' WHERE id_pelayanan = $id";
         $result = mysqli_query($this->con, $query);
         if ($result) {
             return true;
@@ -88,7 +88,7 @@ class Layanan
         $gambarTmpName = $gambarInfo['tmp_name'];
         $gambarExt = strtolower(pathinfo($gambarName, PATHINFO_EXTENSION));
 
-        $queryData = "SELECT * FROM pelayanan WHERE id = '$id'";
+        $queryData = "SELECT * FROM pelayanan WHERE id_pelayanan = '$id'";
         $resultdata = mysqli_query($this->con, $queryData);
         $row = mysqli_fetch_assoc($resultdata);
 
@@ -106,7 +106,7 @@ class Layanan
             }
         }
 
-        $query = "UPDATE pelayanan SET gambar = '$nama_unik_gambar' WHERE id = $id";
+        $query = "UPDATE pelayanan SET gambar = '$nama_unik_gambar' WHERE id_pelayanan = $id";
         $result = mysqli_query($this->con, $query);
         if ($result) {
             return true;
@@ -129,12 +129,12 @@ class Layanan
     }
 
     // If no linked records, proceed with deletion
-    $query = "SELECT gambar FROM pelayanan WHERE id = $id";
+    $query = "SELECT gambar FROM pelayanan WHERE id_pelayanan = $id";
     $result = mysqli_query($this->con, $query);
     $row = mysqli_fetch_assoc($result);
     $gambar = $row['gambar'];
 
-    $deleteQuery = "DELETE FROM pelayanan WHERE id = $id";
+    $deleteQuery = "DELETE FROM pelayanan WHERE id_pelayanan = $id";
     $deleteResult = mysqli_query($this->con, $deleteQuery);
 
     if ($deleteResult) {
