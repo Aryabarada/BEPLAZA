@@ -72,6 +72,44 @@ class Booking
         return $booking; 
     }
 
+    public function getBookingByUserID($id) {
+        // Query to get bookings for the specific user
+        $query = "SELECT * FROM booking WHERE userID = '$id'";
+        $result = mysqli_query($this->con, $query);
+    
+        // Query to get all order_layanan data
+        $queryPelayanan = "SELECT id_booking, id_pelayanan FROM order_layanan";
+        $resultPelayanan = mysqli_query($this->con, $queryPelayanan);
+        
+        // Save all order_layanan results into an array
+        $orderLayanans = array();
+        while ($rowPel = mysqli_fetch_assoc($resultPelayanan)) {
+            $orderLayanans[$rowPel['id_booking']][] = $rowPel['id_pelayanan'];
+        }
+    
+        $booking = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_booking = $row['id_booking'];
+            $order_layanans = array();
+            // Check if there are services for the current booking
+            if (isset($orderLayanans[$id_booking])) {
+                foreach ($orderLayanans[$id_booking] as $id_pelayanan) {
+                    $DataPel = mysqli_fetch_assoc(mysqli_query($this->con, "SELECT nama FROM pelayanan WHERE id_pelayanan=$id_pelayanan"));
+                    $order_layanans[] = $DataPel['nama'];
+                }
+            }
+            $row['order_layanan'] = implode(', ', $order_layanans);
+            $cari = "SELECT username, no_telp FROM user WHERE userID = '$row[userID]'";
+            $koneksi = mysqli_query($this->con, $cari);
+            $ketemu = mysqli_fetch_assoc($koneksi);
+            $row['nama_booking'] = $ketemu['username'];
+            $row['nomerhp_booking'] = $ketemu['no_telp'];
+            $booking[] = $row;
+        }
+    
+        return $booking; 
+    }
+    
     
     public function getBookingById($id) {
         $query = "SELECT * FROM booking WHERE id_booking = $id";
@@ -79,6 +117,7 @@ class Booking
         $booking = mysqli_fetch_assoc($result);
         return $booking;
     }
+
     public function getAllBookedHistory() {
         // Query untuk mendapatkan data pemesanan
         $query = "SELECT * FROM booking WHERE harga_booking != 0";

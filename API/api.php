@@ -49,6 +49,11 @@ switch ($method) {
             $order = $orderObj->getAllOrder();
             echo json_encode($order);
         }
+        elseif (preg_match('/^\/UserBookingHistory\/(\d+)$/', $endpoint, $matches)) {
+            $UserId = $matches[1]; // Extract the user ID from the matches array
+            $booking = $bookingObj->getBookingByUserID($UserId);
+            echo json_encode($booking);
+        }
         elseif (preg_match('/^\/User\/(\d+)$/', $endpoint, $matches)) {
             // Get employee by ID
             $UserId = $matches[1];
