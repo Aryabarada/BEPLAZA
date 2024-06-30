@@ -117,7 +117,6 @@ class Booking
         $booking = mysqli_fetch_assoc($result);
         return $booking;
     }
-
     public function getAllBookedHistory() {
         // Query untuk mendapatkan data pemesanan
         $query = "SELECT * FROM booking WHERE harga_booking != 0";
@@ -319,7 +318,7 @@ class Booking
 
                 // Memasukkan data layanan ke dalam tabel order_layanan
                 foreach ($selectedServices as $service) {
-                    $query_order_layanan = "INSERT INTO order_layanan (id_booking, id_pelayanan) VALUES ('$booking_id', '$service')";
+                    $query_order_layanan = "INSERT INTO order_layanan (id_booking, id_pelayanan) VALUES ('$booking_id', '1')";
                     $result_order_layanan = mysqli_query($this->con, $query_order_layanan);
 
                     if (!$result_order_layanan) {

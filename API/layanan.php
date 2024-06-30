@@ -12,20 +12,36 @@ class Layanan
         $result = mysqli_query($this->con, $query);
         $layanan = [];
         while ($row = mysqli_fetch_assoc($result)) {
+            // Ganti nama kolom id_pelayanan menjadi id
+            $row['id'] = $row['id_pelayanan'];
+            unset($row['id_pelayanan']);
+            
             // Tambahkan prefix ke setiap gambar
-            $row['gambar'] = "http://localhost/BEPLAZA/Storage/" . $row['gambar'];
+            $row['gambar'] = "https://beplazabarber.my.id/Storage/" . $row['gambar'];
+            
             $layanan[] = $row;
         }
         return $layanan;
     }
+
     public function getLayananById($id)
     {
         $query = "SELECT * FROM pelayanan WHERE id_pelayanan = $id";
         $result = mysqli_query($this->con, $query);
         $layanan = mysqli_fetch_assoc($result);
-        $layanan['gambar'] = "http://localhost/BEPLAZA/Storage/" . $layanan['gambar'];
+        
+        if ($layanan) {
+            // Ganti nama kolom id_pelayanan menjadi id
+            $layanan['id'] = $layanan['id_pelayanan'];
+            unset($layanan['id_pelayanan']);
+            
+            // Tambahkan prefix ke setiap gambar
+            $layanan['gambar'] = "https://beplazabarber.my.id/Storage/" . $layanan['gambar'];
+        }
+    
         return $layanan;
     }
+
     public function addGambarLayanan($gambarInfo)
     {
         $gambarName = $gambarInfo['name'];

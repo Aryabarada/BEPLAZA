@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
-$username = "root";
-$password = "";
-$databasename = "db_plaza";
+$username = "daag5153_daaw";
+$password = "inipasswordSUSAH123**";
+$databasename = "daag5153_db_plaza";
 
 // Syntax untuk koneksi ke MySQL
 $con = mysqli_connect($host, $username, $password, $databasename);

@@ -1,7 +1,7 @@
 <?php
 require_once '../layout/koneksi.php';
 require_once '../layout/function.php';
-require_once 'User.php';
+require_once 'user.php';
 require_once 'booking.php';
 require_once 'layanan.php';
 require_once 'order.php';
@@ -16,6 +16,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 $endpoint = $_SERVER['PATH_INFO'];
 // Set the response content type
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+  
 // Process the request
 switch ($method) {
     case 'GET':
@@ -37,11 +40,15 @@ switch ($method) {
         elseif ($endpoint === '/booking') {
             // Get all employees
             $booking = $bookingObj->getAllBooking();
+             
+              
             echo json_encode($booking);
         }
         elseif ($endpoint === '/bookingNoBookingPrice') {
             // Get all employees
             $booking = $bookingObj->getAllBookingWithNullPrice();
+             
+              
             echo json_encode($booking);
         }
         elseif ($endpoint === '/order') {
@@ -58,23 +65,31 @@ switch ($method) {
             // Get employee by ID
             $UserId = $matches[1];
             $User = $UserObj->getUserById($UserId);
+             
+              
             echo json_encode($User);
         }
         elseif (preg_match('/^\/layanan\/(\d+)$/', $endpoint, $matches)) {
             // Get employee by ID
             $layananId = $matches[1];
             $layanan = $layananObj->getLayananById($layananId);
+             
+              
             echo json_encode($layanan);
         }
         elseif (preg_match('/^\/BookingOrder\/(\d+)$/', $endpoint, $matches)) {
             // Get employee by ID
             $Id = $matches[1];
             $order = $orderObj->getOrderByIdBooking($Id);
+             
+              
             echo json_encode($order);
         }
         elseif (preg_match('/^\/booking\/(\d+)$/', $endpoint, $matches)) {
             $tanggal = $matches[1];
             $bookedTimes = $bookingObj->getBookedTimes($tanggal);
+             
+              
         
             // Periksa apakah terjadi kesalahan
             if (isset($bookedTimes['error'])) {
@@ -87,6 +102,8 @@ switch ($method) {
         }
         elseif (preg_match('/^\/bookingNoRange/', $endpoint, $matches)) {
             $bookedTimes = $bookingObj->getAllBookedHistory();
+             
+              
         
             // Periksa apakah terjadi kesalahan
             if (isset($bookedTimes['error'])) {
@@ -105,6 +122,8 @@ switch ($method) {
             $tanggal_formatAkhir = "$tahunAkhir-$bulanAkhir-$tanggalAkhir";
 
             $bookedTimes = $bookingObj->getBookedHistoryByRange($tanggal_formatAwal, $tanggal_formatAkhir);
+             
+              
         
             // Periksa apakah terjadi kesalahan
             if (isset($bookedTimes['error'])) {
@@ -119,6 +138,8 @@ switch ($method) {
         break;
     case 'POST':
         if ($endpoint === '/User') {
+             
+              
             // Add new employee
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $UserObj->addUser($data);
@@ -128,12 +149,15 @@ switch ($method) {
             // Add new employee
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $bookingObj->addBooking($data);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif ($endpoint === '/layanan') {
             $data = json_decode(file_get_contents('php://input'), true);
-            $gambarInfo = $_FILES['gambar']; 
             $result = $layananObj->addLayanan($data);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif ($endpoint === '/gambarlayanan') {
@@ -145,12 +169,16 @@ switch ($method) {
             $layananId = $matches[1];
             $gambarInfo = $_FILES['gambar']; 
             $result = $layananObj->updateGambarLayanan($layananId, $gambarInfo);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif ($endpoint === '/booking-admin') {
             // Add new employee
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $bookingObj->addBookingAdmin($data);
+             
+              
             echo json_encode(['success' => $result]);
         }
         break;
@@ -160,6 +188,8 @@ switch ($method) {
             $UserId = $matches[1];
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $UserObj->updateUser($UserId, $data);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif (preg_match('/^\/bookingUpdate\/(\d+)$/', $endpoint, $matches)) {
@@ -168,12 +198,16 @@ switch ($method) {
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $bookingObj->updateBooking($UserId, $data);
             
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif (preg_match('/^\/layanan\/(\d+)$/', $endpoint, $matches)) {
             $layananId = $matches[1];
             $data = json_decode(file_get_contents('php://input'), true);
             $result = $layananObj->updateLayanan($layananId, $data);
+             
+              
             
             echo json_encode(['success' => $result]);
         }
@@ -183,18 +217,24 @@ switch ($method) {
             // Delete employee by ID
             $UserId = $matches[1];
             $result = $UserObj->deleteUser($UserId);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif (preg_match('/^\/booking\/(\d+)$/', $endpoint, $matches)) {
             // Delete employee by ID
             $bookingId = $matches[1];
             $result = $bookingObj->deleteBooking($bookingId);
+             
+              
             echo json_encode(['success' => $result]);
         }
         elseif (preg_match('/^\/layanan\/(\d+)$/', $endpoint, $matches)) {
             // Delete employee by ID
             $layananId = $matches[1];
             $deleteResult = $layananObj->deleteLayanan($layananId);
+             
+              
             if ($deleteResult === true) {
                 echo json_encode(['success' => true]);
             } else {
